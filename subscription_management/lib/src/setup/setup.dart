@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:subscription_management/src/modules/login/domain/entities/repositories/user_authentication_repository.dart';
 import 'package:subscription_management/src/modules/login/domain/entities/use_cases/user_authentication_use_case.dart';
@@ -8,17 +9,23 @@ import 'package:subscription_management/src/modules/login/infra/datasource/user_
 import 'package:subscription_management/src/modules/login/infra/repositories/user_authentication_repository_impl.dart';
 import 'package:subscription_management/src/modules/login/infra/use_cases/user_authentication_use_case_impl.dart';
 import 'package:subscription_management/src/modules/login/presentation/cubit/user_authentication_cubit.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/repositories/notifications_repository.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/repositories/streaming_repository.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/add_streaming_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/delete_streaming_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/get_streaming_use_case.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/schedule_subscription_notification_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/update_streaming_use_case.dart';
+import 'package:subscription_management/src/modules/streaming_management/external/datasources/notification_datasource_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/external/datasources/streaming_datasource_impl.dart';
+import 'package:subscription_management/src/modules/streaming_management/infra/datasources/notification_datasource.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/datasources/streaming_datasource.dart';
+import 'package:subscription_management/src/modules/streaming_management/infra/repositories/notification_repository_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/repositories/streaming_repository_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/add_message_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/delete_streaming_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/get_message_use_case_impl.dart';
+import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/schedule_subscription_notification_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/update_streaming_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/cubit/streaming_management_cubit.dart';
 
@@ -35,6 +42,9 @@ Future<void> registerDependencies() async {
 }
 
 void setupDatasources() {
+  setup.registerLazySingleton<FlutterLocalNotificationsPlugin>(
+    () => FlutterLocalNotificationsPlugin(),
+  );
   setup.registerFactory<UserAuthenticationDatasource>(
     () => UserAuthenticationDatasourceImpl(),
   );
@@ -43,6 +53,11 @@ void setupDatasources() {
   );
 
   setup.registerFactory<FirebaseFirestore>(() => FirebaseFirestore.instance);
+  setup.registerFactory<NotificationLocalDataSource>(
+    () => NotificationLocalDataSourceImpl(
+      GetIt.I.get<FlutterLocalNotificationsPlugin>(),
+    ),
+  );
 }
 
 void setupRepositories() {
@@ -54,6 +69,11 @@ void setupRepositories() {
   setup.registerFactory<StreamingRepository>(
     () =>
         StreamingRepositoryImpl(dataSource: GetIt.I.get<StreamingDataSource>()),
+  );
+  setup.registerFactory<NotificationRepository>(
+    () => NotificationRepositoryImpl(
+      dataSource: GetIt.I.get<NotificationLocalDataSource>(),
+    ),
   );
 }
 
@@ -81,6 +101,11 @@ void setupUseCases() {
       repository: GetIt.I.get<StreamingRepository>(),
     ),
   );
+  setup.registerFactory<ScheduleSubscriptionNotificationUseCase>(
+    () => ScheduleSubscriptionNotificationUseCaseImpl(
+      repository: GetIt.I.get<NotificationRepository>(),
+    ),
+  );
 }
 
 void setupCubits() {
@@ -95,6 +120,8 @@ void setupCubits() {
       getStreamingUseCase: GetIt.I.get<GetStreamingUseCase>(),
       updateStreamingUseCase: GetIt.I.get<UpdateStreamingUseCase>(),
       deleteStreamingUseCase: GetIt.I.get<DeleteStreamingUseCase>(),
+      scheduleSubscriptionNotificationUseCase:
+          GetIt.I.get<ScheduleSubscriptionNotificationUseCase>(),
     ),
   );
 }

@@ -61,6 +61,16 @@ class LoginPageRouteArgs {
   String toString() {
     return 'LoginPageRouteArgs{key: $key, isFromSignUp: $isFromSignUp}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! LoginPageRouteArgs) return false;
+    return key == other.key && isFromSignUp == other.isFromSignUp;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ isFromSignUp.hashCode;
 }
 
 /// generated route for
@@ -95,6 +105,16 @@ class SelectLoginMethodRouteArgs {
   String toString() {
     return 'SelectLoginMethodRouteArgs{key: $key}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SelectLoginMethodRouteArgs) return false;
+    return key == other.key;
+  }
+
+  @override
+  int get hashCode => key.hashCode;
 }
 
 /// generated route for
@@ -180,4 +200,16 @@ class StreamingManagementPageRouteArgs {
   String toString() {
     return 'StreamingManagementPageRouteArgs{key: $key, newStreaming: $newStreaming, streaming: $streaming}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! StreamingManagementPageRouteArgs) return false;
+    return key == other.key &&
+        newStreaming == other.newStreaming &&
+        streaming == other.streaming;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ newStreaming.hashCode ^ streaming.hashCode;
 }

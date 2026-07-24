@@ -40,6 +40,8 @@ dependencies:
   auto_route: ^10.0.1
   string_validator: ^1.1.0
   doso: ^1.0.0
+  flutter_local_notifications: ^22.1.0
+  timezone: ^0.11.1
 
   
   

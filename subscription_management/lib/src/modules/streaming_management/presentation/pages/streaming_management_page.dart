@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:subscription_management/src/modules/shared/widgets/loading_button.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/entities/streaming_entity.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/entities/subscriptions_entity.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/cubit/streaming_management_cubit.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/widgets/cancel_subscription_modal_content.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/widgets/streaming_form_controller.dart';
@@ -81,10 +82,17 @@ class _StreamingManagementPageState extends State<StreamingManagementPage> {
       widget.newStreaming,
     );
 
+    final subscriptionEntity = SubscriptionEntity(
+      id: entity.streamingId ?? '',
+      name: entity.streamingName,
+      price: entity.streamingValue,
+      dueDate: entity.renewalDate ?? DateTime.now(),
+    );
+
     if (widget.newStreaming) {
-      await _streamingCubit.addStreaming(entity);
+      await _streamingCubit.addStreaming(entity, subscriptionEntity);
     } else {
-      await _streamingCubit.updateStreaming(entity);
+      await _streamingCubit.updateStreaming(entity, subscriptionEntity);
     }
   }
 
@@ -241,7 +249,9 @@ class _StreamingManagementPageState extends State<StreamingManagementPage> {
                     widget.newStreaming
                         ? strings.addSubscription
                         : strings.save,
-                onPressed: () => isFormValid ? _onSavePressed() : null,
+                onPressed: () {
+                  isFormValid ? _onSavePressed() : null;
+                },
                 buttonColor: isFormValid ? _primaryColor : Colors.grey.shade400,
               );
             },

@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   _navigateToHomePage() {
-    context.pushRoute(HomePageRoute());
+    context.pushRoute(const HomePageRoute());
   }
 
   @override
