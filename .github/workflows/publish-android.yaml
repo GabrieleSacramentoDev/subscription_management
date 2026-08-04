@@ -5,6 +5,8 @@ on:
     secrets:
       API_KEY: 
         required: true
+      VAR_API_KEY:
+        required: true
 
 defaults:
   run:
@@ -20,18 +22,20 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
+          distribution: temurin
       - name: Setup Flutter
-        uses: sub6resources/setup-flutter@v1
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.29.0'
           channel: stable
+          cache: true
       - name: Exibir versão do Flutter instalada
         run: flutter --version
       - name: Generate .env
         run: |
           cat <<EOF > .env
-          API_KEY=${{ Env.apiKey }}
-          VAR_API_KEY=${{ Env.varApiKey }}
+          API_KEY=${{ secrets.API_KEY }}
+          VAR_API_KEY=${{ secrets.VAR_API_KEY }}
           EOF
       - name: Install dependencies
         run: flutter pub get

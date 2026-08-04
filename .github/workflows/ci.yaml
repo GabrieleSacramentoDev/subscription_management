@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, dev]
 
+defaults:
+  run:
+    working-directory: subscription_management
+
 jobs:
   flutter_test: 
     name: Run flutter analysis and tests
@@ -17,34 +21,27 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
+          distribution: temurin
       - name: Setup Flutter
-        uses: sub6resources/setup-flutter@v1
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.29.0'
           channel: stable
+          cache: true
+      - name: Generate .env
+        run: cp .env.example .env
       - name: Flutter pub get
         run: flutter pub get
       - name: Run flutter analysis
         run: flutter analyze
       - name: Run flutter format
-        run: flutter format --dry-run --set-exit-if-changed lib/
+        run: dart format --output=none --set-exit-if-changed lib/
       - name: Run flutter test formatter
-        run: flutter format --dry-run --set-exit-if-changed test/
+        run: dart format --output=none --set-exit-if-changed test/
       - name: Run flutter tests
         run: flutter test --coverage
-      - name: Armazena coverage
-        run: flutter test --machine > test_results.json
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
+      - name: Verify coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          name: test_results.json
-          path: test_results.json
-      - name: Report coverage
-        uses: dorny/test-reporter@v1
-        with:
-          name: test_results
-          path: test_results.json
-          reporter: lcov
-      - uses: VeryGoodOpenSource/coverage-merge-action@v1
-        with:
+          path: subscription_management/coverage/lcov.info
           min_coverage: 0
