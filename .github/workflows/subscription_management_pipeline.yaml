@@ -1,0 +1,12 @@
+name: "Subscription Management CI"
+
+on: 
+  push: 
+    branchs: [main]
+
+jobs:
+  publish_play_store:
+  name: Android Publish
+  uses: ./.github/workflows/publish-android.yaml
+  secrets: 
+    API_KEY: ${{Env.apiKey}}

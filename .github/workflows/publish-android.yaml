@@ -1,0 +1,44 @@
+name: Publicando Android
+
+on: 
+  workflow_call:
+    secrets:
+      API_KEY: 
+        required: true
+
+defaults:
+  run:
+    working-directory: subscription_management
+
+jobs: 
+  publish-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+      - name: Setup Flutter
+        uses: sub6resources/setup-flutter@v1
+        with:
+          flutter-version: '3.29.0'
+          channel: stable
+      - name: Exibir versão do Flutter instalada
+        run: flutter --version
+      - name: Generate .env
+        run: |
+          cat <<EOF > .env
+          API_KEY=${{ Env.apiKey }}
+          VAR_API_KEY=${{ Env.varApiKey }}
+          EOF
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build APPBUNDLE
+        run: flutter build appbundle
+      - name: Publish APPBUNDLE
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: subscription_management/build/app/outputs/bundle/release/app-release.aab

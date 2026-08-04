@@ -1,0 +1,49 @@
+name: "CI"
+
+on: 
+  push: 
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  flutter_test: 
+    name: Run flutter analysis and tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+        uses: subosito/flutter-action@v3
+        with:
+          flutter-version: '3.29.0'
+          channel: stable
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Run flutter analysis
+        run: flutter analyze
+      - name: Run flutter format
+        run: flutter format --dry-run --set-exit-if-changed lib/
+      - name: Run flutter test formatter
+        run: flutter format --dry-run --set-exit-if-changed test/
+      - name: Run flutter tests
+        run: flutter test --coverage
+      - name: Armazena coverage
+        run: flutter test --machine > test_results.json
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test_results.json
+          path: test_results.json
+      - name: Report coverage
+        uses: dorny/test-reporter@v1
+        with:
+          name: test_results
+          path: test_results.json
+          reporter: lcov
+      - uses: VeryGoodOpenSource/coverage-merge-action@v1
+        with:
+          min_coverage: 0
