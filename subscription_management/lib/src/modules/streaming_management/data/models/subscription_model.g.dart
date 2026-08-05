@@ -11,8 +11,7 @@ SubscriptionModel _$SubscriptionModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String?,
       name: json['name'] as String,
       price: json['price'] as num?,
-      dueDate:
-          json['dueDate'] == null
-              ? null
-              : DateTime.parse(json['dueDate'] as String),
+      dueDate: json['dueDate'] == null
+          ? null
+          : DateTime.parse(json['dueDate'] as String),
     );

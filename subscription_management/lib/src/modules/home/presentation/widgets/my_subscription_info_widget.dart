@@ -64,16 +64,14 @@ class MySubscriptionInfoWidget extends StatelessWidget {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment:
-                      renewalDate != null
-                          ? MainAxisAlignment.start
-                          : MainAxisAlignment.center,
+                  mainAxisAlignment: renewalDate != null
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding:
-                          renewalDate != null
-                              ? EdgeInsets.only(left: 12.w, top: 12.h)
-                              : EdgeInsets.only(left: 12.w),
+                      padding: renewalDate != null
+                          ? EdgeInsets.only(left: 12.w, top: 12.h)
+                          : EdgeInsets.only(left: 12.w),
                       child: Text(
                         streamingServiceName,
                         style: TextStyle(

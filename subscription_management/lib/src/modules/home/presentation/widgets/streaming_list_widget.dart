@@ -28,9 +28,8 @@ class StreamingListWidget extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.only(top: 8.h, bottom: 72.h),
           itemCount: streamings.length,
-          itemBuilder:
-              (context, index) =>
-                  StreamingItemWidget(streaming: streamings[index]),
+          itemBuilder: (context, index) =>
+              StreamingItemWidget(streaming: streamings[index]),
         );
       },
     );

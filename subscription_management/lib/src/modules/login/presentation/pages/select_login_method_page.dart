@@ -76,19 +76,15 @@ class SelectLoginMethodPage extends StatelessWidget {
                 ),
                 CustomButton(
                   textButton: strings.enter,
-                  onPressed:
-                      () => context.pushRoute(
-                        LoginPageRoute(isFromSignUp: false),
-                      ),
+                  onPressed: () =>
+                      context.pushRoute(LoginPageRoute(isFromSignUp: false)),
                   isLarge: true,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 16.h, bottom: 32.h),
                   child: GestureDetector(
-                    onTap:
-                        () => context.pushRoute(
-                          LoginPageRoute(isFromSignUp: true),
-                        ),
+                    onTap: () =>
+                        context.pushRoute(LoginPageRoute(isFromSignUp: true)),
                     child: Text(
                       'Cadastre-se',
                       style: TextStyle(

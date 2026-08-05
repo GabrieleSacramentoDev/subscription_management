@@ -66,15 +66,13 @@ class HomePage extends StatelessWidget {
                     ),
                     actions: [
                       Builder(
-                        builder:
-                            (context) => IconButton(
-                              icon: const Icon(
-                                Icons.menu_rounded,
-                                color: Color.fromRGBO(111, 86, 221, 1),
-                              ),
-                              onPressed:
-                                  () => Scaffold.of(context).openEndDrawer(),
-                            ),
+                        builder: (context) => IconButton(
+                          icon: const Icon(
+                            Icons.menu_rounded,
+                            color: Color.fromRGBO(111, 86, 221, 1),
+                          ),
+                          onPressed: () => Scaffold.of(context).openEndDrawer(),
+                        ),
                       ),
                     ],
                     backgroundColor: const Color.fromRGBO(243, 243, 243, 1),
@@ -82,10 +80,9 @@ class HomePage extends StatelessWidget {
                   ),
                   body: const HomeFilledBodyWidget(),
                   floatingActionButton: FloatingActionButton(
-                    onPressed:
-                        () => context.router.navigate(
-                          const SelectStreamingPageRoute(),
-                        ),
+                    onPressed: () => context.router.navigate(
+                      const SelectStreamingPageRoute(),
+                    ),
                     backgroundColor: const Color.fromRGBO(111, 86, 221, 1),
                     child: Icon(
                       Icons.add,
@@ -98,14 +95,12 @@ class HomePage extends StatelessWidget {
                 ),
               );
             },
-            onLoading:
-                () => const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                ),
-            onInitial:
-                () => const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                ),
+            onLoading: () => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+            onInitial: () => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
             onFailure: (error) => Scaffold(body: StreamingsErrorWidget()),
           );
         },

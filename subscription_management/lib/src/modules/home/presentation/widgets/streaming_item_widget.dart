@@ -25,16 +25,14 @@ class StreamingItemWidget extends StatelessWidget {
           );
         },
         streamingServiceName: streaming.streamingName,
-        renewalDate:
-            streaming.renewalDate != null
-                ? formatRenewalDate(streaming.renewalDate!)
-                : 'Data não definida',
+        renewalDate: streaming.renewalDate != null
+            ? formatRenewalDate(streaming.renewalDate!)
+            : 'Data não definida',
         subscriptionPrice: streaming.streamingValue,
         seeDetails: true,
-        renewalColor:
-            streaming.renewalDate != null
-                ? getRenewalColor(streaming.renewalDate!)
-                : Colors.grey,
+        renewalColor: streaming.renewalDate != null
+            ? getRenewalColor(streaming.renewalDate!)
+            : Colors.grey,
       ),
     );
   }

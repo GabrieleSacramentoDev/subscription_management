@@ -9,12 +9,11 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      builder:
-          (context, child) => MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(useMaterial3: false),
-            routerConfig: _router.config(),
-          ),
+      builder: (context, child) => MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(useMaterial3: false),
+        routerConfig: _router.config(),
+      ),
     );
   }
 }

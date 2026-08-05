@@ -180,13 +180,12 @@ class _StreamingManagementPageState extends State<StreamingManagementPage> {
       children: [
         BlocConsumer<StreamingManagementCubit, StreamingManagementState>(
           listener: _handleBlocState,
-          builder:
-              (context, state) => Column(
-                children: [
-                  _buildSaveButton(),
-                  if (!widget.newStreaming) _buildDeleteButton(),
-                ],
-              ),
+          builder: (context, state) => Column(
+            children: [
+              _buildSaveButton(),
+              if (!widget.newStreaming) _buildDeleteButton(),
+            ],
+          ),
         ),
       ],
     );
@@ -245,10 +244,9 @@ class _StreamingManagementPageState extends State<StreamingManagementPage> {
             builder: (context, isFormValid, child) {
               return CustomButton(
                 isLarge: true,
-                textButton:
-                    widget.newStreaming
-                        ? strings.addSubscription
-                        : strings.save,
+                textButton: widget.newStreaming
+                    ? strings.addSubscription
+                    : strings.save,
                 onPressed: () {
                   isFormValid ? _onSavePressed() : null;
                 },
@@ -270,17 +268,17 @@ class _StreamingManagementPageState extends State<StreamingManagementPage> {
           return isDeleting
               ? const LoadingButton(isLarge: true, buttonColor: _deleteColor)
               : CustomButton(
-                isLarge: true,
-                textButton: strings.cancelSubscription,
-                onPressed: () {
-                  CancelSubscriptionModalContent.show(
-                    context,
-                    streamingName: widget.streaming.streamingName,
-                    onConfirm: () => _onDeletePressed(),
-                  );
-                },
-                buttonColor: _deleteColor,
-              );
+                  isLarge: true,
+                  textButton: strings.cancelSubscription,
+                  onPressed: () {
+                    CancelSubscriptionModalContent.show(
+                      context,
+                      streamingName: widget.streaming.streamingName,
+                      onConfirm: () => _onDeletePressed(),
+                    );
+                  },
+                  buttonColor: _deleteColor,
+                );
         },
       ),
     );

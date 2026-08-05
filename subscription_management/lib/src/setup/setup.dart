@@ -120,8 +120,8 @@ void setupCubits() {
       getStreamingUseCase: GetIt.I.get<GetStreamingUseCase>(),
       updateStreamingUseCase: GetIt.I.get<UpdateStreamingUseCase>(),
       deleteStreamingUseCase: GetIt.I.get<DeleteStreamingUseCase>(),
-      scheduleSubscriptionNotificationUseCase:
-          GetIt.I.get<ScheduleSubscriptionNotificationUseCase>(),
+      scheduleSubscriptionNotificationUseCase: GetIt.I
+          .get<ScheduleSubscriptionNotificationUseCase>(),
     ),
   );
 }

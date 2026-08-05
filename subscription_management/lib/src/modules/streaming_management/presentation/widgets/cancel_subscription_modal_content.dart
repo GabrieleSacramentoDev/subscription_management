@@ -25,11 +25,10 @@ class CancelSubscriptionModalContent extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder:
-          (_) => CancelSubscriptionModalContent(
-            streamingName: streamingName,
-            onConfirm: onConfirm,
-          ),
+      builder: (_) => CancelSubscriptionModalContent(
+        streamingName: streamingName,
+        onConfirm: onConfirm,
+      ),
     );
   }
 

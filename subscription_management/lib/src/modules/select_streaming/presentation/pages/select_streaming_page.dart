@@ -62,10 +62,9 @@ class _SelectStreamingPageState extends State<SelectStreamingPage> {
 
     setState(() {
       _searchText = query;
-      filteredStreamings =
-          allStreamings.where((streaming) {
-            return streaming.streamingName.toLowerCase().contains(query);
-          }).toList();
+      filteredStreamings = allStreamings.where((streaming) {
+        return streaming.streamingName.toLowerCase().contains(query);
+      }).toList();
     });
   }
 
@@ -128,12 +127,11 @@ class _SelectStreamingPageState extends State<SelectStreamingPage> {
                 if (_searchText.isEmpty) {
                   filteredStreamings = allStreamings;
                 } else {
-                  filteredStreamings =
-                      allStreamings.where((streaming) {
-                        return streaming.streamingName.toLowerCase().contains(
-                          _searchText,
-                        );
-                      }).toList();
+                  filteredStreamings = allStreamings.where((streaming) {
+                    return streaming.streamingName.toLowerCase().contains(
+                      _searchText,
+                    );
+                  }).toList();
                 }
               }
               if (filteredStreamings.isEmpty && _searchText.isNotEmpty) {

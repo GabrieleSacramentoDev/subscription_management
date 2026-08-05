@@ -30,8 +30,8 @@ class _HomeFilledBodyWidgetState extends State<HomeFilledBodyWidget> {
         child: Column(
           children: [
             BlocBuilder<StreamingManagementCubit, StreamingManagementState>(
-              builder:
-                  (context, state) => TotalSpentSectionWidget(state: state),
+              builder: (context, state) =>
+                  TotalSpentSectionWidget(state: state),
             ),
             Align(
               alignment: Alignment.topLeft,

@@ -22,55 +22,66 @@ class BaseBottomSheet extends StatelessWidget {
       builder: (context) {
         return showCloseButton
             ? PopScope(
-              child: SafeArea(
-                child: Wrap(
-                  children: [
-                    Column(
-                      crossAxisAlignment: crossAxisAlignment,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 20.h, left: 16.w),
-                                child: Text(
-                                  title ?? '',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSans',
-                                    fontSize: 16.h,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color.fromRGBO(15, 17, 19, 1),
+                child: SafeArea(
+                  child: Wrap(
+                    children: [
+                      Column(
+                        crossAxisAlignment: crossAxisAlignment,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 20.h,
+                                    left: 16.w,
+                                  ),
+                                  child: Text(
+                                    title ?? '',
+                                    style: TextStyle(
+                                      fontFamily: 'OpenSans',
+                                      fontSize: 16.h,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color.fromRGBO(
+                                        15,
+                                        17,
+                                        19,
+                                        1,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 20.h, right: 16.w),
-                              child: Semantics(
-                                button: true,
-                                hint: closeButtonSemantics,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    onPop?.call();
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Icon(
-                                    closeButtonIcon ?? Icons.close,
-                                    color: Colors.black,
-                                    size: 16.h,
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: 20.h,
+                                  right: 16.w,
+                                ),
+                                child: Semantics(
+                                  button: true,
+                                  hint: closeButtonSemantics,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      onPop?.call();
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Icon(
+                                      closeButtonIcon ?? Icons.close,
+                                      color: Colors.black,
+                                      size: 16.h,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        child,
-                      ],
-                    ),
-                  ],
+                            ],
+                          ),
+                          child,
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
+              )
             : SafeArea(child: child);
       },
       backgroundColor: Colors.white,

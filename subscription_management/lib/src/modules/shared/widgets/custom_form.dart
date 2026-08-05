@@ -81,24 +81,23 @@ class CustomForm extends StatelessWidget {
               filled: true,
               fillColor: Colors.white,
               hintText: isPrefixHint ? null : hintText,
-              prefixIcon:
-                  isPrefixHint && hintText != null
-                      ? Padding(
-                        padding: EdgeInsets.only(left: 15.h, right: 8.h),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '$hintText: ',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 14.h,
-                              ),
+              prefixIcon: isPrefixHint && hintText != null
+                  ? Padding(
+                      padding: EdgeInsets.only(left: 15.h, right: 8.h),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '$hintText: ',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14.h,
                             ),
-                          ],
-                        ),
-                      )
-                      : null,
+                          ),
+                        ],
+                      ),
+                    )
+                  : null,
               contentPadding: EdgeInsets.symmetric(horizontal: 15.h),
               suffixIcon: suffixIcon,
               suffixIconColor: const Color.fromRGBO(111, 86, 221, 1),

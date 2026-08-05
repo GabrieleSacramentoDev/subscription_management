@@ -78,8 +78,9 @@ class _LoginPageState extends State<LoginPage> {
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: CustomAppBar(
-              appBarTitle:
-                  widget.isFromSignUp ? strings.createAccount : strings.enter,
+              appBarTitle: widget.isFromSignUp
+                  ? strings.createAccount
+                  : strings.enter,
               isBackButtonVisible: true,
               backgroundColor: Colors.white,
               appBarTitleColor: const Color.fromRGBO(111, 86, 221, 1),
@@ -102,22 +103,22 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           widget.isFromSignUp
                               ? Padding(
-                                padding: EdgeInsets.only(bottom: 16.h),
-                                child: CustomForm(
-                                  semanticLabel: strings.name,
-                                  isMandatory: true,
-                                  hintText: strings.name,
-                                  controller: nameController,
-                                  label: strings.name,
+                                  padding: EdgeInsets.only(bottom: 16.h),
+                                  child: CustomForm(
+                                    semanticLabel: strings.name,
+                                    isMandatory: true,
+                                    hintText: strings.name,
+                                    controller: nameController,
+                                    label: strings.name,
 
-                                  validator: (text) {
-                                    if (text == null || text.isEmpty) {
-                                      return strings.thisFieldIsRequired;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              )
+                                    validator: (text) {
+                                      if (text == null || text.isEmpty) {
+                                        return strings.thisFieldIsRequired;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                )
                               : const SizedBox.shrink(),
                           CustomForm(
                             semanticLabel: strings.email,
@@ -145,12 +146,9 @@ class _LoginPageState extends State<LoginPage> {
                               controller: passwordController,
                               label: strings.password,
                               suffixIcon: GestureDetector(
-                                onTap:
-                                    () => setState(
-                                      () =>
-                                          isPasswordVisible =
-                                              !isPasswordVisible,
-                                    ),
+                                onTap: () => setState(
+                                  () => isPasswordVisible = !isPasswordVisible,
+                                ),
                                 child: Icon(
                                   isPasswordVisible
                                       ? Icons.visibility_off_outlined
@@ -192,10 +190,10 @@ class _LoginPageState extends State<LoginPage> {
                         return state.isLoading
                             ? const LoadingButton(isLarge: true)
                             : CustomButton(
-                              textButton: strings.enter,
-                              onPressed: () => _handleLogin(context),
-                              isLarge: true,
-                            );
+                                textButton: strings.enter,
+                                onPressed: () => _handleLogin(context),
+                                isLarge: true,
+                              );
                       },
                     ),
                   ],

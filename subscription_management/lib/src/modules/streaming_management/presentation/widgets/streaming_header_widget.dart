@@ -28,14 +28,13 @@ class StreamingHeaderWidget extends StatelessWidget {
   Widget _buildNewStreamingHeader() {
     return Align(
       alignment: Alignment.centerLeft,
-      child:
-          streaming.streamingImage?.isNotEmpty == true
-              ? Image.asset(
-                streaming.streamingImage!,
-                errorBuilder:
-                    (context, error, stackTrace) => const SizedBox.shrink(),
-              )
-              : const SizedBox.shrink(),
+      child: streaming.streamingImage?.isNotEmpty == true
+          ? Image.asset(
+              streaming.streamingImage!,
+              errorBuilder: (context, error, stackTrace) =>
+                  const SizedBox.shrink(),
+            )
+          : const SizedBox.shrink(),
     );
   }
 

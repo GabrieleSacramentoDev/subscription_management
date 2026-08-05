@@ -14,8 +14,8 @@ class TotalSpentSectionWidget extends StatelessWidget {
     final totalSpent = state.when(
       onLoading: () => 0.0,
       onFailure: (error) => 0.0,
-      onSuccess:
-          (streamings) => CalculatorService.calculateTotalSpent(streamings),
+      onSuccess: (streamings) =>
+          CalculatorService.calculateTotalSpent(streamings),
     );
 
     return Padding(

@@ -41,13 +41,12 @@ class StreamingModel extends Equatable {
       streamingValue: (data['streamingValue'] as num?)?.toDouble(),
       renewalDate: _convertTimestamp(data['renewalDate']),
       startsAt: _convertTimestamp(data['startsAt']),
-      paymentMethod:
-          data['paymentMethod'] != null
-              ? PaymentMethod.values.firstWhere(
-                (e) => e.name == data['paymentMethod'],
-                orElse: () => PaymentMethod.creditCard,
-              )
-              : null,
+      paymentMethod: data['paymentMethod'] != null
+          ? PaymentMethod.values.firstWhere(
+              (e) => e.name == data['paymentMethod'],
+              orElse: () => PaymentMethod.creditCard,
+            )
+          : null,
     );
   }
 

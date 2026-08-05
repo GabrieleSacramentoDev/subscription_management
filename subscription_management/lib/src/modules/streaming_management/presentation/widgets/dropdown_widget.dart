@@ -83,13 +83,9 @@ class _DropdownWidgetState extends State<DropdownWidget> {
               );
             }).toList();
           },
-          items:
-              widget.options.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+          items: widget.options.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
         ),
       ),
     );
