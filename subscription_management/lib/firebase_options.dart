@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCNYd6VNCQkNQQ8_CrvPg0ewNl0kC7U4nI',
-    appId: '1:239384444296:android:de90145e31b6c18f9f0e3d',
+    appId: '1:239384444296:android:bab61d7a5e66713b9f0e3d',
     messagingSenderId: '239384444296',
     projectId: 'subscription-management-c29fb',
     storageBucket: 'subscription-management-c29fb.firebasestorage.app',
@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '239384444296',
     projectId: 'subscription-management-c29fb',
     storageBucket: 'subscription-management-c29fb.firebasestorage.app',
-    iosBundleId: 'com.example.subscriptionManagement',
+    iosBundleId: 'com.gabrielesacramento.subscriptionManagement',
   );
 }
