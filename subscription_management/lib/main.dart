@@ -1,28 +1,37 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:subscription_management/firebase_options.dart';
 import 'package:subscription_management/src/app.dart';
-import 'package:subscription_management/src/modules/streaming_management/external/datasources/notification_datasource_impl.dart';
-import 'package:subscription_management/src/setup/setup.dart';
 
-void main() async {
+const _splashLogoAsset = 'assets/images/subscription_management_logo.png';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  final notificationDataSource = NotificationLocalDataSourceImpl(
-    FlutterLocalNotificationsPlugin(),
-  );
-  await notificationDataSource.init();
-
-  await registerDependencies();
-  await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.debug,
-  );
-
+  await _preloadSplashLogo();
   runApp(App());
+}
+
+Future<void> _preloadSplashLogo() async {
+  const asset = AssetImage(_splashLogoAsset);
+  final completer = Completer<void>();
+  final stream = asset.resolve(ImageConfiguration.empty);
+
+  late ImageStreamListener listener;
+  listener = ImageStreamListener(
+    (image, synchronousCall) {
+      stream.removeListener(listener);
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    },
+    onError: (exception, stackTrace) {
+      stream.removeListener(listener);
+      if (!completer.isCompleted) {
+        completer.completeError(exception, stackTrace);
+      }
+    },
+  );
+
+  stream.addListener(listener);
+  await completer.future;
 }

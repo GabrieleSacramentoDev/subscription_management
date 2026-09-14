@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:subscription_management/src/modules/login/presentation/cubit/user_authentication_cubit.dart';
 import 'package:subscription_management/src/routes/router.dart';
+import 'package:subscription_management/src/app.dart';
+import 'package:subscription_management/src/setup/initialize_application.dart';
 
 @RoutePage(name: 'SplashScreenRoute')
 class SplashScreen extends StatefulWidget {
@@ -15,9 +17,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
+  static const _logoAssetPath = 'assets/images/subscription_management_logo.png';
+  static const _logoEntryOffset = 80.0;
+
   late AnimationController _controller;
   late Animation<double> _animation;
-  final checkAuthentication = GetIt.I.get<UserAuthenticationCubit>();
+  UserAuthenticationCubit? _checkAuthentication;
 
   @override
   void initState() {
@@ -33,13 +38,34 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeOutCirc,
     );
 
-    _controller.forward();
+    _controller.forward(from: 0);
 
-    Future.delayed(const Duration(seconds: 1), () {
-      _controller.forward().then((_) {
-        checkAuthentication.checkAuthentication();
-      });
+    _bootstrap();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(const AssetImage(_logoAssetPath), context);
+  }
+
+  Future<void> _bootstrap() async {
+    await initializeApplication();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _checkAuthentication = GetIt.I.get<UserAuthenticationCubit>();
     });
+
+    await Future<void>.delayed(const Duration(seconds: 1));
+    if (!mounted) {
+      return;
+    }
+
+    await _controller.forward();
+    _checkAuthentication?.checkAuthentication();
   }
 
   @override
@@ -48,20 +74,48 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  _navigateToSelectLoginMethodPage() {
+  void _navigateToSelectLoginMethodPage() {
     context.pushRoute(SelectLoginMethodRoute());
   }
 
-  _navigateToHomePage() {
+  void _navigateToHomePage() {
     context.pushRoute(const HomePageRoute());
+  }
+
+  Widget _buildSplashBody() {
+    return Center(
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0, _logoEntryOffset * (1 - _animation.value)),
+            child: child,
+          );
+        },
+        child: Image.asset(
+          _logoAssetPath,
+          gaplessPlayback: true,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final splashBody = _buildSplashBody();
+    final cubit = _checkAuthentication;
+
+    if (cubit == null) {
+      return Scaffold(
+        backgroundColor: App.splashBackgroundColor,
+        body: splashBody,
+      );
+    }
+
     return BlocProvider(
-      create: (context) => checkAuthentication,
+      create: (context) => cubit,
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(228, 228, 237, 1),
+        backgroundColor: App.splashBackgroundColor,
         body: BlocListener<UserAuthenticationCubit, UserAuthenticationState>(
           listener: (context, state) {
             if (state.isInitial) {
@@ -72,20 +126,7 @@ class _SplashScreenState extends State<SplashScreen>
               _navigateToSelectLoginMethodPage();
             }
           },
-          child: Center(
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(0, 200 * (1 - _animation.value)),
-                  child: child,
-                );
-              },
-              child: Image.asset(
-                'assets/images/subscription_management_logo.png',
-              ),
-            ),
-          ),
+          child: splashBody,
         ),
       ),
     );
