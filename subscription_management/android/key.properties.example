@@ -1,4 +1,11 @@
+# Copie para key.properties (não commitar). Caminhos relativos à pasta android/.
+# Chave de UPLOAD para Assinatura de apps do Google Play — distinta da chave de assinatura do app na Play.
+# https://developer.android.com/studio/publish/app-signing
+
 storePassword=SUA_SENHA_DO_KEYSTORE
 keyPassword=SUA_SENHA_DA_CHAVE
 keyAlias=upload
-storeFile=/caminho/absoluto/upload-keystore.jks
+storeFile=upload-keystore.jks
+
+# Exportar certificado de upload para o Play Console:
+# keytool -export -rfc -keystore upload-keystore.jks -alias upload -file upload_certificate.pem

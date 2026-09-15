@@ -40,7 +40,6 @@ android {
     defaultConfig {
         applicationId = "com.gabrielesacramento.subscription_management"
 
-        // Defina minSdk 21 ou superior para suporte total a notificações locais
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -52,18 +51,43 @@ android {
             create("release") {
                 keyAlias = keystoreProperties.getProperty("keyAlias")
                 keyPassword = keystoreProperties.getProperty("keyPassword")
-                storeFile = file(keystoreProperties.getProperty("storeFile")!!)
                 storePassword = keystoreProperties.getProperty("storePassword")
+                storeFile = rootProject.file(
+                    keystoreProperties.getProperty("storeFile")!!,
+                )
             }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = if (hasReleaseSigning) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release")
+            // Play Console exige AAB assinado com chave de upload (não debug).
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+}
+
+afterEvaluate {
+    listOf("bundleRelease", "assembleRelease", "packageRelease").forEach { taskName ->
+        tasks.matching { it.name == taskName }.configureEach {
+            doFirst {
+                check(hasReleaseSigning) {
+                    """
+                    Assinatura de release não configurada.
+
+                    1. Gere um keystore de upload (validade >= 25 anos):
+                       keytool -genkeypair -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+
+                    2. Copie android/key.properties.example para android/key.properties
+
+                    3. Registre o certificado de upload no Play Console (Integridade do app).
+
+                    Documentação: https://developer.android.com/studio/publish/app-signing
+                    """.trimIndent()
+                }
             }
         }
     }
@@ -74,7 +98,6 @@ flutter {
 }
 
 dependencies {
-    // Dependência necessária para o Desugaring funcionar no Gradle
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.core:core-splashscreen:1.0.1")
 }
