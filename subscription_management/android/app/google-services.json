@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "239384444296",
+    "project_id": "subscription-management-c29fb",
+    "storage_bucket": "subscription-management-c29fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239384444296:android:bab61d7a5e66713b9f0e3d",
+        "android_client_info": {
+          "package_name": "com.gabrielesacramento.subscription_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNYd6VNCQkNQQ8_CrvPg0ewNl0kC7U4nI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
