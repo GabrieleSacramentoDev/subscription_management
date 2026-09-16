@@ -1,93 +1,139 @@
 import 'package:flutter/material.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/enums/subscription_periodicity.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/utils/subscription_lifecycle.dart';
 
-// Calcula os dias até a renovação
-int getDaysUntilRenewal(DateTime renewalDate) {
-  final today = DateTime.now();
-  final todayDate = DateTime(today.year, today.month, today.day);
-  final renewal = DateTime(
-    renewalDate.year,
-    renewalDate.month,
-    renewalDate.day,
+String formatRenewalDate(
+  DateTime renewalDate, {
+  SubscriptionPeriodicity periodicity = SubscriptionPeriodicity.monthly,
+  DateTime? today,
+}) {
+  final lifecycle = calculateSubscriptionLifecycle(
+    storedDueDate: renewalDate,
+    periodicity: periodicity,
+    today: today,
   );
 
-  final difference = renewal.difference(todayDate).inDays;
-
-  // Se já passou da data, calcular próxima renovação
-  if (difference < 0) {
-    // Assumindo renovação mensal, você pode ajustar conforme sua lógica
-    final nextRenewal = DateTime(
-      renewalDate.year,
-      renewalDate.month + 1,
-      renewalDate.day,
-    );
-    return nextRenewal.difference(todayDate).inDays;
-  }
-
-  return difference;
-}
-
-// Formata a mensagem de renovação com casos especiais
-String formatRenewalDate(DateTime renewalDate) {
-  final daysUntil = getDaysUntilRenewal(renewalDate);
-
-  if (daysUntil < 0) {
-    return 'Venceu há ${daysUntil.abs()} dias';
-  } else if (daysUntil == 0) {
-    return 'Renova hoje';
-  } else if (daysUntil == 1) {
-    return 'Renova amanhã';
-  } else {
-    return 'Renova em $daysUntil dias';
+  switch (lifecycle.status) {
+    case SubscriptionBillingStatus.grace:
+      final days = lifecycle.daysOverdue;
+      if (days == 1) {
+        return 'Vencida há 1 dia';
+      }
+      return 'Vencida há $days dias';
+    case SubscriptionBillingStatus.overdue:
+      return 'Vencida há ${lifecycle.daysOverdue} dias';
+    case SubscriptionBillingStatus.active:
+      final daysUntil = lifecycle.daysUntilDue;
+      if (daysUntil == 0) {
+        return 'Renova hoje';
+      }
+      if (daysUntil == 1) {
+        return 'Renova amanhã';
+      }
+      return 'Renova em $daysUntil dias';
   }
 }
 
-// Retorna a cor baseada na urgência da renovação
-Color getRenewalColor(DateTime renewalDate) {
-  final daysUntil = getDaysUntilRenewal(renewalDate);
+Color getRenewalColor(
+  DateTime renewalDate, {
+  SubscriptionPeriodicity periodicity = SubscriptionPeriodicity.monthly,
+  DateTime? today,
+}) {
+  final lifecycle = calculateSubscriptionLifecycle(
+    storedDueDate: renewalDate,
+    periodicity: periodicity,
+    today: today,
+  );
 
-  if (daysUntil < 0) {
-    return Colors.red; // Vencido
-  } else if (daysUntil <= 3 || daysUntil <= 7) {
-    return const Color.fromARGB(255, 199, 124, 10); // Urgente (3 dias ou menos)
-  } else {
-    return const Color.fromRGBO(77, 77, 97, 1); // Normal
+  switch (lifecycle.status) {
+    case SubscriptionBillingStatus.grace:
+      return const Color.fromARGB(255, 199, 124, 10);
+    case SubscriptionBillingStatus.overdue:
+      return Colors.red;
+    case SubscriptionBillingStatus.active:
+      if (lifecycle.daysUntilDue <= 3) {
+        return const Color.fromARGB(255, 199, 124, 10);
+      }
+      if (lifecycle.daysUntilDue <= 7) {
+        return const Color.fromARGB(255, 199, 124, 10);
+      }
+      return const Color.fromRGBO(77, 77, 97, 1);
   }
 }
 
-// Retorna ícone baseado na urgência
-IconData getRenewalIcon(DateTime renewalDate) {
-  final daysUntil = getDaysUntilRenewal(renewalDate);
+IconData getRenewalIcon(
+  DateTime renewalDate, {
+  SubscriptionPeriodicity periodicity = SubscriptionPeriodicity.monthly,
+  DateTime? today,
+}) {
+  final lifecycle = calculateSubscriptionLifecycle(
+    storedDueDate: renewalDate,
+    periodicity: periodicity,
+    today: today,
+  );
 
-  if (daysUntil < 0) {
-    return Icons.error; // Vencido
-  } else if (daysUntil <= 3) {
-    return Icons.warning; // Urgente
-  } else if (daysUntil <= 7) {
-    return Icons.schedule; // Próximo
-  } else {
-    return Icons.check_circle_outline; // Normal
+  switch (lifecycle.status) {
+    case SubscriptionBillingStatus.grace:
+    case SubscriptionBillingStatus.overdue:
+      return Icons.warning;
+    case SubscriptionBillingStatus.active:
+      if (lifecycle.daysUntilDue <= 3) {
+        return Icons.warning;
+      }
+      if (lifecycle.daysUntilDue <= 7) {
+        return Icons.schedule;
+      }
+      return Icons.check_circle_outline;
   }
 }
 
-// Enum para categorizar o status da renovação
 enum RenewalStatus {
-  overdue, // Vencido
-  urgent, // Urgente (≤ 3 dias)
-  upcoming, // Próximo (≤ 7 dias)
-  normal, // Normal (> 7 dias)
+  overdue,
+  urgent,
+  upcoming,
+  normal,
 }
 
-// Retorna o status da renovação
-RenewalStatus getRenewalStatus(DateTime renewalDate) {
-  final daysUntil = getDaysUntilRenewal(renewalDate);
+RenewalStatus getRenewalStatus(
+  DateTime renewalDate, {
+  SubscriptionPeriodicity periodicity = SubscriptionPeriodicity.monthly,
+  DateTime? today,
+}) {
+  final lifecycle = calculateSubscriptionLifecycle(
+    storedDueDate: renewalDate,
+    periodicity: periodicity,
+    today: today,
+  );
 
-  if (daysUntil < 0) {
-    return RenewalStatus.overdue;
-  } else if (daysUntil <= 3) {
-    return RenewalStatus.urgent;
-  } else if (daysUntil <= 7) {
-    return RenewalStatus.upcoming;
-  } else {
-    return RenewalStatus.normal;
+  switch (lifecycle.status) {
+    case SubscriptionBillingStatus.grace:
+    case SubscriptionBillingStatus.overdue:
+      return RenewalStatus.overdue;
+    case SubscriptionBillingStatus.active:
+      if (lifecycle.daysUntilDue <= 3) {
+        return RenewalStatus.urgent;
+      }
+      if (lifecycle.daysUntilDue <= 7) {
+        return RenewalStatus.upcoming;
+      }
+      return RenewalStatus.normal;
   }
+}
+
+int getDaysUntilRenewal(
+  DateTime renewalDate, {
+  SubscriptionPeriodicity periodicity = SubscriptionPeriodicity.monthly,
+  DateTime? today,
+}) {
+  final lifecycle = calculateSubscriptionLifecycle(
+    storedDueDate: renewalDate,
+    periodicity: periodicity,
+    today: today,
+  );
+
+  if (lifecycle.status == SubscriptionBillingStatus.active) {
+    return lifecycle.daysUntilDue;
+  }
+
+  return -lifecycle.daysOverdue;
 }

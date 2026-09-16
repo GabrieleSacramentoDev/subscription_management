@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:subscription_management/src/modules/home/domain/enums/payment_method.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/enums/subscription_periodicity.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/entities/streaming_entity.dart';
 import 'package:subscription_management/src/utils/formatters.dart';
 
@@ -17,6 +18,8 @@ class StreamingFormController {
   final ValueNotifier<bool> isFormValidNotifier = ValueNotifier<bool>(false);
 
   PaymentMethod? selectedPaymentMethod;
+  SubscriptionPeriodicity selectedPeriodicity =
+      SubscriptionPeriodicity.monthly;
 
   void initializeFields(StreamingEntity streaming, bool isNewStreaming) {
     nameController.text = streaming.streamingName;
@@ -46,6 +49,7 @@ class StreamingFormController {
     }
 
     selectedPaymentMethod = streaming.paymentMethod;
+    selectedPeriodicity = streaming.periodicity;
   }
 
   void setupFormValidation() {
@@ -92,6 +96,14 @@ class StreamingFormController {
     }
   }
 
+  void updatePeriodicity(String? value) {
+    final periodicity = SubscriptionPeriodicity.fromLabel(value);
+    if (periodicity != null) {
+      selectedPeriodicity = periodicity;
+      validateForm();
+    }
+  }
+
   StreamingEntity buildStreamingEntity(
     StreamingEntity originalStreaming,
     bool isNewStreaming,
@@ -107,6 +119,7 @@ class StreamingFormController {
           _parseDate(renewalDateController.text) ??
           (isNewStreaming ? null : originalStreaming.renewalDate),
       paymentMethod: selectedPaymentMethod ?? originalStreaming.paymentMethod,
+      periodicity: selectedPeriodicity,
     );
   }
 

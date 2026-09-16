@@ -73,7 +73,6 @@ class NotificationLocalDataSourceImpl implements NotificationLocalDataSource {
         ),
         iOS: DarwinNotificationDetails(),
       ),
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: payload,
     );

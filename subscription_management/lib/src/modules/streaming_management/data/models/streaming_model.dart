@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:subscription_management/src/modules/home/domain/enums/payment_method.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/enums/subscription_periodicity.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/entities/streaming_entity.dart';
 import 'package:subscription_management/src/utils/timestamp_converter.dart';
@@ -17,6 +18,7 @@ class StreamingModel extends Equatable {
   @TimestampConverter()
   final DateTime? startsAt;
   final PaymentMethod? paymentMethod;
+  final SubscriptionPeriodicity? periodicity;
 
   const StreamingModel({
     this.streamingId,
@@ -26,6 +28,7 @@ class StreamingModel extends Equatable {
     this.streamingValue,
     this.renewalDate,
     required this.streamingName,
+    this.periodicity,
   });
 
   factory StreamingModel.fromJson(Map<String, dynamic> json) =>
@@ -47,6 +50,9 @@ class StreamingModel extends Equatable {
               orElse: () => PaymentMethod.creditCard,
             )
           : null,
+      periodicity: SubscriptionPeriodicity.fromStorage(
+        data['periodicity'] as String?,
+      ),
     );
   }
 
@@ -59,6 +65,7 @@ class StreamingModel extends Equatable {
       renewalDate: renewalDate,
       startsAt: startsAt,
       paymentMethod: paymentMethod,
+      periodicity: periodicity ?? SubscriptionPeriodicity.monthly,
     );
   }
 
@@ -71,8 +78,10 @@ class StreamingModel extends Equatable {
       renewalDate: entity.renewalDate,
       startsAt: entity.startsAt,
       paymentMethod: entity.paymentMethod,
+      periodicity: entity.periodicity,
     );
   }
+
   static DateTime? _convertTimestamp(dynamic timestamp) {
     if (timestamp is Timestamp) {
       return timestamp.toDate();
@@ -91,5 +100,6 @@ class StreamingModel extends Equatable {
     renewalDate,
     startsAt,
     paymentMethod,
+    periodicity,
   ];
 }

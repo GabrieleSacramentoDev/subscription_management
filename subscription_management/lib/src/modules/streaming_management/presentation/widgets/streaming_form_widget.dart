@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:subscription_management/src/modules/home/domain/enums/payment_method.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/enums/subscription_periodicity.dart';
 import 'package:subscription_management/src/modules/shared/widgets/custom_form.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/widgets/dropdown_widget.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/widgets/streaming_form_controller.dart';
@@ -59,15 +60,33 @@ class StreamingFormWidget extends StatelessWidget {
             onTap: () => onSelectDate(controller.renewalDateController),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 16.h),
+          child: DropdownWidget(
+            isPaymentMethod: true,
+            options: [strings.debitCard, strings.creditCard, strings.pix],
+            onChanged: (value) {
+              controller.updatePaymentMethod(value);
+              onPaymentMethodChanged();
+            },
+            selectedValue: PaymentMethod.getStringFromPaymentMethod(
+              controller.selectedPaymentMethod,
+            ),
+          ),
+        ),
         DropdownWidget(
-          isPaymentMethod: true,
-          options: [strings.debitCard, strings.creditCard, strings.pix],
+          isPaymentMethod: false,
+          fieldLabel: strings.periodicity,
+          options: [
+            SubscriptionPeriodicity.label(SubscriptionPeriodicity.monthly),
+            SubscriptionPeriodicity.label(SubscriptionPeriodicity.annual),
+          ],
           onChanged: (value) {
-            controller.updatePaymentMethod(value);
+            controller.updatePeriodicity(value);
             onPaymentMethodChanged();
           },
-          selectedValue: PaymentMethod.getStringFromPaymentMethod(
-            controller.selectedPaymentMethod,
+          selectedValue: SubscriptionPeriodicity.label(
+            controller.selectedPeriodicity,
           ),
         ),
       ],

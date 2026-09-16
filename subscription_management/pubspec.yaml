@@ -52,7 +52,17 @@ dev_dependencies:
 
 
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.14.4
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/subscription_management_logo.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/images/subscription_management_logo.png
+  adaptive_icon_foreground_inset: 0
+  remove_alpha_ios: true
+  background_color_ios: "#FFFFFF"
 
 flutter:
   uses-material-design: true

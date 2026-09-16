@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:subscription_management/src/modules/shared/widgets/loading_button.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/entities/streaming_entity.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/entities/subscriptions_entity.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/utils/subscription_lifecycle.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/cubit/streaming_management_cubit.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/widgets/cancel_subscription_modal_content.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/widgets/streaming_form_controller.dart';
@@ -82,11 +83,18 @@ class _StreamingManagementPageState extends State<StreamingManagementPage> {
       widget.newStreaming,
     );
 
+    final storedDue = entity.renewalDate ?? DateTime.now();
+    final lifecycle = calculateSubscriptionLifecycle(
+      storedDueDate: storedDue,
+      periodicity: entity.periodicity,
+    );
+
     final subscriptionEntity = SubscriptionEntity(
       id: entity.streamingId ?? '',
       name: entity.streamingName,
       price: entity.streamingValue,
-      dueDate: entity.renewalDate ?? DateTime.now(),
+      dueDate: lifecycle.effectiveDueDate,
+      periodicity: entity.periodicity,
     );
 
     if (widget.newStreaming) {

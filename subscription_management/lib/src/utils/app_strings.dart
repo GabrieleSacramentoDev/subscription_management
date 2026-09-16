@@ -31,6 +31,9 @@ class SubscriptionsManagementStrings {
   final String startsAt = 'Começou em';
   final String renewAt = 'Renova em';
   final String paymentMethod = 'Método de pagamento';
+  final String periodicity = 'Periodicidade';
+  final String subscriptionGracePeriodBanner =
+      'Você tem assinaturas vencidas no período de tolerância de 3 dias. Regularize o pagamento para evitar avanço automático do ciclo.';
   final String rememberMe = 'Me lembrar em:';
   final String threeDays = '3 dias';
   final String sevenDays = '7 dias';

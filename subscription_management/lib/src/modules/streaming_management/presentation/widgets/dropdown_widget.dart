@@ -4,6 +4,7 @@ import 'package:subscription_management/src/utils/app_strings.dart';
 
 class DropdownWidget extends StatefulWidget {
   final bool isPaymentMethod;
+  final String? fieldLabel;
   final List<String> options;
   final Function(String?)? onChanged;
   final String? selectedValue;
@@ -12,6 +13,7 @@ class DropdownWidget extends StatefulWidget {
     super.key,
     required this.options,
     this.isPaymentMethod = false,
+    this.fieldLabel,
     this.onChanged,
     this.selectedValue,
   });
@@ -22,6 +24,13 @@ class DropdownWidget extends StatefulWidget {
 
 class _DropdownWidgetState extends State<DropdownWidget> {
   final strings = SubscriptionsManagementStrings();
+
+  String get _label {
+    if (widget.fieldLabel != null) {
+      return widget.fieldLabel!;
+    }
+    return widget.isPaymentMethod ? strings.paymentMethod : strings.renewAt;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +48,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
         child: DropdownButton<String>(
           isExpanded: true,
           hint: Text(
-            widget.isPaymentMethod
-                ? "${strings.paymentMethod}:"
-                : "${strings.renewAt}:",
+            '$_label:',
             style: TextStyle(fontSize: 14.h, color: Colors.grey[600]),
           ),
           value: widget.selectedValue,
@@ -62,9 +69,7 @@ class _DropdownWidgetState extends State<DropdownWidget> {
               return Row(
                 children: [
                   Text(
-                    widget.isPaymentMethod
-                        ? "${strings.paymentMethod}:"
-                        : "${strings.renewAt}:",
+                    '${widget.fieldLabel ?? (widget.isPaymentMethod ? strings.paymentMethod : strings.renewAt)}:',
                     style: TextStyle(fontSize: 14.h, color: Colors.grey[600]),
                   ),
                   const SizedBox(width: 8),

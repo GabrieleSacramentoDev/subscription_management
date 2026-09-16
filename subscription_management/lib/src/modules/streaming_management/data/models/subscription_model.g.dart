@@ -15,3 +15,11 @@ SubscriptionModel _$SubscriptionModelFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['dueDate'] as String),
     );
+
+Map<String, dynamic> _$SubscriptionModelToJson(SubscriptionModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'price': instance.price,
+      'dueDate': instance.dueDate?.toIso8601String(),
+    };

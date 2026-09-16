@@ -14,7 +14,10 @@ import 'package:subscription_management/src/modules/streaming_management/domain/
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/add_streaming_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/delete_streaming_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/get_streaming_use_case.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/cancel_subscription_notification_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/schedule_subscription_notification_use_case.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/sync_subscription_notifications_use_case.dart';
+import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/resolve_streaming_lifecycle_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/domain/use_cases/update_streaming_use_case.dart';
 import 'package:subscription_management/src/modules/streaming_management/external/datasources/notification_datasource_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/external/datasources/streaming_datasource_impl.dart';
@@ -25,7 +28,10 @@ import 'package:subscription_management/src/modules/streaming_management/infra/r
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/add_message_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/delete_streaming_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/get_message_use_case_impl.dart';
+import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/cancel_subscription_notification_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/schedule_subscription_notification_use_case_impl.dart';
+import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/sync_subscription_notifications_use_case_impl.dart';
+import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/resolve_streaming_lifecycle_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/infra/use_cases/update_streaming_use_case_impl.dart';
 import 'package:subscription_management/src/modules/streaming_management/presentation/cubit/streaming_management_cubit.dart';
 
@@ -106,6 +112,22 @@ void setupUseCases() {
       repository: GetIt.I.get<NotificationRepository>(),
     ),
   );
+  setup.registerFactory<CancelSubscriptionNotificationUseCase>(
+    () => CancelSubscriptionNotificationUseCaseImpl(
+      repository: GetIt.I.get<NotificationRepository>(),
+    ),
+  );
+  setup.registerFactory<SyncSubscriptionNotificationsUseCase>(
+    () => SyncSubscriptionNotificationsUseCaseImpl(
+      scheduleSubscriptionNotificationUseCase:
+          GetIt.I.get<ScheduleSubscriptionNotificationUseCase>(),
+    ),
+  );
+  setup.registerFactory<ResolveStreamingLifecycleUseCase>(
+    () => ResolveStreamingLifecycleUseCaseImpl(
+      updateStreamingUseCase: GetIt.I.get<UpdateStreamingUseCase>(),
+    ),
+  );
 }
 
 void setupCubits() {
@@ -122,6 +144,12 @@ void setupCubits() {
       deleteStreamingUseCase: GetIt.I.get<DeleteStreamingUseCase>(),
       scheduleSubscriptionNotificationUseCase: GetIt.I
           .get<ScheduleSubscriptionNotificationUseCase>(),
+      cancelSubscriptionNotificationUseCase: GetIt.I
+          .get<CancelSubscriptionNotificationUseCase>(),
+      syncSubscriptionNotificationsUseCase: GetIt.I
+          .get<SyncSubscriptionNotificationsUseCase>(),
+      resolveStreamingLifecycleUseCase: GetIt.I
+          .get<ResolveStreamingLifecycleUseCase>(),
     ),
   );
 }
