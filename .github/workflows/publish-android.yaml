@@ -85,7 +85,8 @@ jobs:
       - name: Build APPBUNDLE
         run: flutter build appbundle --release
       - name: Publish APPBUNDLE
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: app-release.aab
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: subscription_management/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
