@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,38 +19,68 @@ class HomeFilledBodyWidget extends StatefulWidget {
   State<HomeFilledBodyWidget> createState() => _HomeFilledBodyWidgetState();
 }
 
-class _HomeFilledBodyWidgetState extends State<HomeFilledBodyWidget> {
+class _HomeFilledBodyWidgetState extends State<HomeFilledBodyWidget>
+    with WidgetsBindingObserver {
   final strings = SubscriptionsManagementStrings();
   final _getStreamingCubit = GetIt.I.get<StreamingManagementCubit>();
+  final _homeReloadTick = ValueNotifier<int>(0);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _homeReloadTick.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      return;
+    }
+    unawaited(_getStreamingCubit.refreshStreamings());
+    _homeReloadTick.value++;
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _getStreamingCubit..getStreamings(),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          children: [
-            BlocBuilder<StreamingManagementCubit, StreamingManagementState>(
-              builder: (context, state) =>
-                  TotalSpentSectionWidget(state: state),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                strings.mySubscriptions,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: const Color.fromRGBO(111, 86, 221, 1),
+      child: ValueListenableBuilder<int>(
+        valueListenable: _homeReloadTick,
+        builder: (context, _, _) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              children: [
+                BlocBuilder<StreamingManagementCubit, StreamingManagementState>(
+                  builder: (context, state) =>
+                      TotalSpentSectionWidget(state: state),
                 ),
-              ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    strings.mySubscriptions,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromRGBO(111, 86, 221, 1),
+                    ),
+                  ),
+                ),
+                BlocBuilder<StreamingManagementCubit, StreamingManagementState>(
+                  builder: (context, state) =>
+                      StreamingListWidget(state: state),
+                ),
+              ],
             ),
-            BlocBuilder<StreamingManagementCubit, StreamingManagementState>(
-              builder: (context, state) => StreamingListWidget(state: state),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

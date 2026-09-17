@@ -28,6 +28,8 @@ class StreamingManagementCubit extends Cubit<StreamingManagementState> {
   syncSubscriptionNotificationsUseCase;
   final ResolveStreamingLifecycleUseCase resolveStreamingLifecycleUseCase;
 
+  StreamSubscription<List<StreamingEntity>>? _streamingsSubscription;
+
   StreamingManagementCubit({
     required this.addStreamingUseCase,
     required this.getStreamingUseCase,
@@ -39,29 +41,50 @@ class StreamingManagementCubit extends Cubit<StreamingManagementState> {
     required this.resolveStreamingLifecycleUseCase,
   }) : super(const Do.initial());
 
-  Future<void> getStreamings() async {
+  Future<void> getStreamings({bool showLoading = true}) async {
     try {
-      emit(const Do.loading());
-      getStreamingUseCase()
-          .listen((streamings) async {
-            try {
-              final resolved =
-                  await resolveStreamingLifecycleUseCase.call(streamings);
-              emit(Do.success(resolved));
-              unawaited(
-                syncSubscriptionNotificationsUseCase.call(resolved),
-              );
-            } catch (error) {
-              emit(Do.failure(Exception(error)));
+      if (showLoading) {
+        emit(const Do.loading());
+      }
+      await _streamingsSubscription?.cancel();
+      _streamingsSubscription = getStreamingUseCase().listen(
+        (streamings) async {
+          try {
+            final resolved = await resolveStreamingLifecycleUseCase.call(
+              streamings,
+            );
+            if (isClosed) {
+              return;
             }
-          })
-          .onError((error) {
+            emit(Do.success(resolved));
+            unawaited(syncSubscriptionNotificationsUseCase.call(resolved));
+          } catch (error) {
+            if (isClosed) {
+              return;
+            }
             emit(Do.failure(Exception(error)));
-          });
+          }
+        },
+        onError: (error) {
+          if (isClosed) {
+            return;
+          }
+          emit(Do.failure(Exception(error)));
+        },
+      );
     } catch (e) {
       emit(Do.failure(Exception(e)));
-      return;
     }
+  }
+
+  Future<void> refreshStreamings() {
+    return getStreamings(showLoading: false);
+  }
+
+  @override
+  Future<void> close() async {
+    await _streamingsSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> addStreaming(
